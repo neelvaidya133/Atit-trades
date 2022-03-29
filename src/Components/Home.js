@@ -21,6 +21,7 @@ const Home = () => {
   const [newItem, setnewItem] = useState("");
   const [newQuantity, setNewQuantity] = useState(0);
   const usercollectionref = collection(db, "stock");
+  const [searchData, setSearchData] = useState([]);
 
   // =================================effect hooks  ======================
 
@@ -67,13 +68,24 @@ const Home = () => {
     alert("Stock Removed Succesfully");
     window.location.reload(true);
   };
+  // ======================////
+  const handle = (event) => {
+    const searchWord = event.target.value;
+    const newsearch = stock.filter((value) => {
+      return value.item
+        .toLocaleLowerCase()
+        .includes(searchWord.toLocaleLowerCase());
+    });
+    setSearchData(newsearch);
+  };
 
+  // ============================///
   return (
     <>
       <Layout>
         <Header
           style={{
-            width: "100%",
+            widtd: "100%",
 
             display: "flex",
             justifyContent: "center",
@@ -150,106 +162,157 @@ const Home = () => {
             </Button>
           </div>
         </Content>
+        {/*=================================================================================  */}
         <Footer
           style={{
             display: "flex",
             flexDirection: "column",
           }}
         >
-          {stock.map((stocks) => {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  backgroundColor: "#561157",
-                  borderRadius: "1rem",
-                  padding: "2rem",
-                  margin: "1rem",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <h1 style={{ color: "#fff" }}> {stocks.item} </h1>
-                <h1 style={{ color: "#fff" }}> {stocks.quantity} </h1>
-                <Input
-                  required
-                  style={{
-                    fontSize: "small",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#fff",
-                    borderRadius: "1rem",
-                    padding: "0.7rem",
-                    border: "none",
-                  }}
-                  type="number"
-                  placeholder="enter new quantity"
-                  onChange={(event) => {
-                    setUpdateQuantity(event.target.value);
-                  }}
-                />
+          <div
+            style={{
+              margin: "1rem",
+              borderRadius: "1rem",
+              backgroundColor: "#BD90BD",
+              padding: "2rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <input
+              placeholder="Search Item"
+              style={{
+                fontSize: "small",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "1rem",
+                padding: "0.7rem",
+                marginTop: "1rem",
+                border: "none",
+              }}
+              onChange={handle}
+            />
+          </div>
+          <tr
+            style={{
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: " 2fr 1fr 1fr 1fr 1fr 1fr",
+            }}
+          >
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Update Quantity</th>
+            <th> Add Quantity </th>
+            <th>Remove Quantity </th>
+            <th> Delete Item </th>
+          </tr>
 
-                <Button
-                  type="primary"
+          {searchData.map((stocks) => {
+            return (
+              <div>
+                <tr
                   style={{
-                    fontSize: "small",
-                    borderRadius: "1rem",
-                    marginTop: "1rem",
-                    backgroundColor: "#fff",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "none",
-                    padding: "0.7rem",
-                  }}
-                  onClick={() => {
-                    AddQuantity(stocks.id, stocks.quantity);
+                    width: "100%",
+                    display: "grid",
+                    gridTemplateColumns: " 2fr 1fr 1fr 1fr 1fr 1fr",
                   }}
                 >
-                  Add Quantity
-                </Button>
-                <Button
-                  style={{
-                    fontSize: "small",
-                    borderRadius: "1rem",
-                    marginTop: "1rem",
-                    backgroundColor: "#fff",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "none",
-                    padding: "0.7rem",
-                  }}
-                  onClick={() => {
-                    RemoveQuantity(stocks.id, stocks.quantity);
-                  }}
-                  type="primary"
-                  shape="round"
-                >
-                  Remove Item
-                </Button>
-                <Button
-                  style={{
-                    fontSize: "small",
-                    borderRadius: "1rem",
-                    marginTop: "1rem",
-                    backgroundColor: "#fff",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "none",
-                    padding: "0.7rem",
-                  }}
-                  type="primary"
-                  shape="round"
-                  onClick={() => {
-                    deleteItem(stocks.id);
-                  }}
-                >
-                  Delete item
-                </Button>
+                  <td
+                    style={{
+                      color: "#000",
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    {" "}
+                    {stocks.item}{" "}
+                  </td>
+                  <td
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    {" "}
+                    {stocks.quantity}{" "}
+                  </td>
+                  <td>
+                    <Input
+                      required
+                      style={{
+                        fontSize: "small",
+
+                        borderRadius: "1rem",
+                        padding: "0.5rem",
+                        border: "1px",
+                      }}
+                      type="number"
+                      placeholder="enter new quantity"
+                      onChange={(event) => {
+                        setUpdateQuantity(event.target.value);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      style={{
+                        fontSize: "small",
+                        borderRadius: "1rem",
+                        color: "#fff",
+                        backgroundColor: "#BD90BD",
+
+                        border: "none",
+                        padding: "0.5rem",
+                      }}
+                      onClick={() => {
+                        AddQuantity(stocks.id, stocks.quantity);
+                      }}
+                    >
+                      Add Quantity
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      style={{
+                        fontSize: "small",
+                        borderRadius: "1rem",
+                        color: "#fff",
+                        backgroundColor: "#BD90BD",
+
+                        border: "none",
+                        padding: "0.5rem",
+                      }}
+                      onClick={() => {
+                        RemoveQuantity(stocks.id, stocks.quantity);
+                      }}
+                      type="primary"
+                      shape="round"
+                    >
+                      Remove Item
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      style={{
+                        fontSize: "small",
+                        borderRadius: "1rem",
+                        color: "#fff",
+                        backgroundColor: "#BD90BD",
+
+                        border: "none",
+                        padding: "0.5rem",
+                      }}
+                      type="primary"
+                      shape="round"
+                      onClick={() => {
+                        deleteItem(stocks.id);
+                      }}
+                    >
+                      Delete item
+                    </Button>
+                  </td>
+                </tr>
               </div>
             );
           })}
